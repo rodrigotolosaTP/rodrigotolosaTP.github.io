@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Rodrigo Tolosa — Portfolio</title>
+  <title>Rodrigo Tolosa — Portfolio de Proyectos</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Management & Analytics — Transfer Pricing Consultant and Process Automation with Python." />
 
@@ -27,6 +27,7 @@
     .card{border:1px solid #e6e6e6; border-radius:16px; padding:16px;}
     .card h3{margin:0 0 6px; font-size:1.1rem;}
     .tags{color:#666; font-size:.9rem; margin:0 0 8px;}
+    .pill{display:inline-block; font-size:.78rem; border:1px solid #bbb; border-radius:999px; padding:2px 8px; color:#555; margin-left:6px;}
     footer{border-top:1px solid #eee; color:#666; text-align:center; padding:24px;}
   </style>
 </head>
@@ -46,26 +47,26 @@
     <section>
       <h2>Proyectos</h2>
       <div class="grid">
-        <article class="card">
-          <h3>Predicción de skip en Spotify (XGBoost)</h3>
-          <p class="tags">ML · Kaggle · XGBoost</p>
-          <p>Features + RandomizedSearchCV y submission. Post en preparación.</p>
-          <p><a class="btn" href="#" target="_blank" rel="noopener">Repo</a> <a class="btn" href="#" target="_blank" rel="noopener">Demo</a></p>
-        </article>
+        <!-- App de Precios de Transferencia -->
         <article class="card">
           <h3>App de Precios de Transferencia</h3>
           <p class="tags">Automatizada con Python</p>
-          <p>Gráfica de tópicos macro, ajuste por inflación de montos y análisis de precios internos.</p>
+          <p>Gráfica de tópicos macro, ajuste por inflación de montos y análisis de precios internos para consultoría en TP.</p>
           <p>
             <a class="btn" href="https://github.com/rodrigotolosaTP/tp.app" target="_blank" rel="noopener">Repo</a>
             <a class="btn" href="https://transfer-pricing.streamlit.app/" target="_blank" rel="noopener">Abrir</a>
           </p>
         </article>
+
+        <!-- BCRA Series -->
         <article class="card">
-          <h3>Asignación óptima (ILP/GAP)</h3>
-          <p class="tags">CPLEX · Heurística</p>
-          <p>Modelo entero + greedy para escenarios de alta demanda.</p>
-          <p><a class="btn" href="#" target="_blank" rel="noopener">Repo</a></p>
+          <h3>Generación de gráficos de series publicadas por el BCRA <span class="pill">Próximamente</span></h3>
+          <p class="tags">Series temporales · Python</p>
+          <p>Descarga y visualización de series del BCRA (tipos de cambio, tasas, agregados monetarios) con filtros y exportación.</p>
+          <p>
+            <a class="btn" href="#" target="_blank" rel="noopener">Repo</a>
+            <a class="btn" href="#" target="_blank" rel="noopener">Abrir</a>
+          </p>
         </article>
       </div>
     </section>
@@ -75,4 +76,5 @@
   <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
 </body>
 </html>
+
 
