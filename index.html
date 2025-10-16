@@ -1,9 +1,68 @@
-<!doctype html><meta charset="utf-8">
-<title>Rodrigo Tolosa — Portfolio</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<h1>Rodrigo Tolosa</h1>
-<p>Economista & Data Analyst — Transfer Pricing, Automatizaciones, y uso de Streamlit.</p>
-<ul>
-  <li><a href="https://github.com/rodrigotolosaTP" target="_blank">GitHub</a></li>
-  <li><a href="mailto:hola@rodrigotolosa.com">Contacto</a></li>
-</ul>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Rodrigo Tolosa — Portfolio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Analítica aplicada a negocios — Transfer Pricing, Optimización (ILP/GAP) y ML en Python." />
+  <style>
+    :root { --mx: 980px; }
+    * { box-sizing: border-box; }
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#111; line-height:1.6; background:#fff;}
+    header{padding:56px 20px 28px; border-bottom:1px solid #eee;}
+    .wrap{max-width:var(--mx); margin:0 auto;}
+    h1{margin:0 0 8px; font-size:2.1rem;}
+    .tag{color:#555; margin:0 0 16px;}
+    .btn{display:inline-block; margin:6px 10px 0 0; padding:9px 14px; border:1px solid #222; border-radius:12px; text-decoration:none; color:#111}
+    main{padding:28px 20px 80px;}
+    section{margin-top:28px;}
+    h2{margin:0 0 14px; font-size:1.35rem;}
+    .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px;}
+    .card{border:1px solid #e6e6e6; border-radius:16px; padding:16px;}
+    .card h3{margin:0 0 6px; font-size:1.1rem;}
+    .tags{color:#666; font-size:.9rem; margin:0 0 8px;}
+    footer{border-top:1px solid #eee; color:#666; text-align:center; padding:24px;}
+  </style>
+</head>
+<body>
+  <header><div class="wrap">
+    <h1>Rodrigo Tolosa</h1>
+    <p class="tag">Analítica aplicada a negocios — Precios de Transferencia, Optimización (ILP/GAP) y ML en Python.</p>
+    <p>
+      <a class="btn" href="https://github.com/rodrigotolosaTP" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn" href="mailto:hola@rodrigotolosa.com">Contacto</a>
+      <a class="btn" href="https://rodrigotolosa.com/app" target="_blank" rel="noopener">Abrir App (cuando la publiques)</a>
+    </p>
+  </div></header>
+
+  <main><div class="wrap">
+    <section>
+      <h2>Proyectos destacados</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Predicción de skip en Spotify (XGBoost)</h3>
+          <p class="tags">ML · Kaggle · XGBoost</p>
+          <p>Features + RandomizedSearchCV y submission. Post en preparación.</p>
+          <p><a class="btn" href="#" target="_blank">Repo</a> <a class="btn" href="#" target="_blank">Demo</a></p>
+        </article>
+        <article class="card">
+          <h3>App de Tipo de Cambio (Streamlit)</h3>
+          <p class="tags">Streamlit · Datos diarios</p>
+          <p>TC oficial/MEP/CCL con filtros por período y descarga CSV.</p>
+          <p><a class="btn" href="#" target="_blank">Repo</a> <a class="btn" href="#" target="_blank">Abrir</a></p>
+        </article>
+        <article class="card">
+          <h3>Asignación óptima (ILP/GAP)</h3>
+          <p class="tags">CPLEX · Heurística</p>
+          <p>Modelo entero + greedy para escenarios de alta demanda.</p>
+          <p><a class="btn" href="#" target="_blank">Repo</a></p>
+        </article>
+      </div>
+    </section>
+  </div></main>
+
+  <footer>© <span id="y"></span> Rodrigo Tolosa</footer>
+  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+</body>
+</html>
+
