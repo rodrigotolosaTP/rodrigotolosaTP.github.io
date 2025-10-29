@@ -20,6 +20,7 @@
     .subtitle{margin:0 0 12px; font-size:1.25rem; color:#333; font-weight:600;}
     .tag{color:#555; margin:0 0 16px;}
     .btn{display:inline-block; margin:6px 10px 0 0; padding:9px 14px; border:1px solid #222; border-radius:12px; text-decoration:none; color:#111}
+    .btn:hover{background:#111; color:#fff; transition:.15s;}
     main{padding:28px 20px 80px;}
     section{margin-top:28px;}
     h2{margin:0 0 14px; font-size:1.35rem;}
@@ -29,6 +30,14 @@
     .tags{color:#666; font-size:.9rem; margin:0 0 8px;}
     .pill{display:inline-block; font-size:.78rem; border:1px solid #bbb; border-radius:999px; padding:2px 8px; color:#555; margin-left:6px;}
     footer{border-top:1px solid #eee; color:#666; text-align:center; padding:24px;}
+
+    /* Bloque pequeño arriba de Artículos para explicar que son PDFs */
+    .note {
+      font-size:.9rem;
+      color:#555;
+      margin:-6px 0 16px;
+      line-height:1.4;
+    }
   </style>
 </head>
 <body>
@@ -44,7 +53,11 @@
   </div></header>
 
   <main><div class="wrap">
-    <section>
+
+    <!-- ===================== -->
+    <!-- Sección: Aplicaciones -->
+    <!-- ===================== -->
+    <section id="apps">
       <h2>Aplicaciones</h2>
       <div class="grid">
         <!-- App de Precios de Transferencia -->
@@ -72,7 +85,7 @@
         <!-- Nube de palabras -->
         <article class="card">
           <h3>Algoritmo para generar una nube de palabras</h3>
-          <p class="tags">Analisis de la frecuencia de respuestas en encuestas</p>
+          <p class="tags">Análisis de frecuencia de respuestas en encuestas</p>
           <p>Subí un CSV y generá una nube de palabras según la modalidad de tus datos.</p>
           <p>
             <a class="btn" href="https://github.com/rodrigotolosaTP/wordcloud-app" target="_blank" rel="noopener">Repo</a>
@@ -82,11 +95,62 @@
 
       </div>
     </section>
+
+    <!-- ===================== -->
+    <!-- Sección: Artículos    -->
+    <!-- ===================== -->
+    <section id="articulos">
+      <h2>Artículos / Publicaciones</h2>
+      <p class="note">
+        Documentos propios. Análisis técnico, notas de política económica,
+        macroeconomía, y ensayos. Hacé clic en “Leer PDF”.
+      </p>
+
+      <div class="grid">
+        <!-- Ejemplo de Artículo 1 -->
+        <article class="card">
+          <h3>Contexto Macroeconómico 2024</h3>
+          <p class="tags">Repaso de las principales variables del país en 2024</p>
+          <p>Confección de analisis macroeconómico de Argentina y breve mención del contexto económico del resto del mundo</p>
+          <p>
+            <!-- IMPORTANTE:
+                 Subí el PDF a tu repo, por ejemplo dentro de /articulos/
+                 y actualizá este href con la ruta real.
+            -->
+            <a class="btn" href="articulos/Contexto Macroeconómico 2024.pdf" target="_blank" rel="noopener">Leer PDF</a>
+          </p>
+        </article>
+
+        <!-- Ejemplo de Artículo 2 -->
+        <article class="card">
+          <h3>Notas sobre Inflación y Consumo Interno</h3>
+          <p class="tags">Macro Argentina</p>
+          <p>Relación entre desaceleración inflacionaria mensual, salario real y recomposición del consumo privado.</p>
+          <p>
+            <a class="btn" href="articulos/inflacion_consumo_argentina.pdf" target="_blank" rel="noopener">Leer PDF</a>
+          </p>
+        </article>
+
+        <!-- Ejemplo de Artículo 3 -->
+        <article class="card">
+          <h3>Automatización en Consultoría Fiscal</h3>
+          <p class="tags">Productividad · Python aplicado</p>
+          <p>Guía corta de cómo escalar procesos repetitivos (cálculos, reportes regulatorios) a través de scripts y visualizaciones automatizadas.</p>
+          <p>
+            <a class="btn" href="articulos/automatizacion_tp_python.pdf" target="_blank" rel="noopener">Leer PDF</a>
+          </p>
+        </article>
+      </div>
+    </section>
+
   </div></main>
 
   <footer>© <span id="y"></span> Rodrigo Tolosa</footer>
-  <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear()
+  </script>
 </body>
 </html>
+
 
 
