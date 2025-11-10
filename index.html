@@ -30,13 +30,27 @@
     .tags{color:#666; font-size:.9rem; margin:0 0 8px;}
     .pill{display:inline-block; font-size:.78rem; border:1px solid #bbb; border-radius:999px; padding:2px 8px; color:#555; margin-left:6px;}
     footer{border-top:1px solid #eee; color:#666; text-align:center; padding:24px;}
+    .note { font-size:.9rem; color:#555; margin:-6px 0 16px; line-height:1.4; }
 
-    /* Bloque pequeño arriba de Artículos para explicar que son PDFs */
-    .note {
-      font-size:.9rem;
-      color:#555;
-      margin:-6px 0 16px;
-      line-height:1.4;
+    /* === Dark mode + variables === */
+    :root { color-scheme: light dark; --bg:#fff; --fg:#111; --muted:#666; --border:#eee; }
+    .dark { --bg:#0f1115; --fg:#f3f4f6; --muted:#a1a1aa; --border:#262b36; }
+
+    body{ background:var(--bg); color:var(--fg); }
+    header{ border-bottom:1px solid var(--border); }
+    footer{ border-top:1px solid var(--border); color:var(--muted); }
+    .card{ border:1px solid var(--border); }
+    .tags,.note{ color:var(--muted); }
+    .btn{ border-color:var(--fg); color:var(--fg); }
+    .btn:hover{ background:var(--fg); color:var(--bg); }
+
+    /* Ticker sticky con bordes */
+    .tv-tape-sticky{
+      position: sticky; top: 0; z-index: 50;
+      background: var(--bg);
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+      margin:14px 0;
     }
   </style>
 </head>
@@ -48,31 +62,12 @@
     <p>
       <a class="btn" href="https://github.com/rodrigotolosaTP" target="_blank" rel="noopener">GitHub</a>
       <a class="btn" href="mailto:rodrigotolosa7@outlook.com">Contacto</a>
+      <button id="themeToggle" class="btn" type="button" aria-label="Cambiar tema">🌙 Modo oscuro</button>
     </p>
   </div></header>
 
-  <!-- ===== Ticker dinámico (TradingView) ===== -->
-<div class="tradingview-widget-container" style="margin:10px 0;">
-  <div class="tradingview-widget-container__widget"></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-  {
-    "symbols": [
-      { "proName": "TVC:GOLD", "title": "Oro (oz)" },
-      { "proName": "TVC:UKOIL", "title": "Brent (bbl)" },
-      { "proName": "TVC:USOIL", "title": "WTI (bbl)" },
-      { "proName": "CBOT:ZS1!", "title": "Soja (futuro continuo)" },
-      { "proName": "FX_IDC:USDARS", "title": "USD/ARS" },
-      { "proName": "NYSEARCA:LIT", "title": "Litio (ETF proxy)" }
-    ],
-    "showSymbolLogo": false,
-    "colorTheme": "light",
-    "isTransparent": false,
-    "displayMode": "adaptive",
-    "locale": "es"
-  }
-  </script>
-</div>
-
+  <!-- Ticker dinámico -->
+  <div id="tv-ticker" class="tradingview-widget-container tv-tape-sticky"></div>
 
   <main><div class="wrap">
 
@@ -104,17 +99,16 @@
           </p>
         </article>
         
-       <!-- Nube de palabras -->
-       <article class="card">
-        <h3>Algoritmo para generar una nube de palabras</h3>
-        <p class="tags">Análisis de frecuencia de respuestas en encuestas</p>
-        <p>Subí un CSV y generá una nube de palabras según la modalidad de tus datos.</p>
-        <p>
-          <a class="btn" href="https://github.com/rodrigotolosaTP/nube-de-palabras-app" target="_blank" rel="noopener">Repo</a>
-          <a class="btn" href="https://nube-de-palabras-app.streamlit.app" target="_blank" rel="noopener">Abrir</a>
-        </p>
-      </article>
-
+        <!-- Nube de palabras -->
+        <article class="card">
+          <h3>Algoritmo para generar una nube de palabras</h3>
+          <p class="tags">Análisis de frecuencia de respuestas en encuestas</p>
+          <p>Subí un CSV y generá una nube de palabras según la modalidad de tus datos.</p>
+          <p>
+            <a class="btn" href="https://github.com/rodrigotolosaTP/nube-de-palabras-app" target="_blank" rel="noopener">Repo</a>
+            <a class="btn" href="https://nube-de-palabras-app.streamlit.app" target="_blank" rel="noopener">Abrir</a>
+          </p>
+        </article>
 
       </div>
     </section>
@@ -125,8 +119,7 @@
     <section id="articulos">
       <h2>Informes propios que repasan variables económicas</h2>
       <p class="note">
-        Documentos propios. Análisis técnico, notas de política económica y
-        macroeconomía.
+        Documentos propios. Análisis técnico, notas de política económica y macroeconomía.
       </p>
 
       <div class="grid">
@@ -136,11 +129,7 @@
           <p class="tags">Macro Argentina</p>
           <p>Confección de analisis macroeconómico de Argentina y breve mención del contexto económico del resto del mundo</p>
           <p>
-            <!-- IMPORTANTE:
-                 Subí el PDF a tu repo, por ejemplo dentro de /articulos/
-                 y actualizá este href con la ruta real.
-            -->
-            <a class="btn" href="articulos/Contexto Macroeconómico 2024.pdf" target="_blank" rel="noopener">Leer PDF</a>
+            <a class="btn" href="articulos/Contexto%20Macroecon%C3%B3mico%202024.pdf" target="_blank" rel="noopener">Leer PDF</a>
           </p>
         </article>
 
@@ -150,7 +139,7 @@
           <p class="tags">Macro Argentina</p>
           <p>Confección semestral del repaso de principales variables del país y del resto del mundo</p>
           <p>
-            <a class="btn" href="articulos/Contexto macro semestral 2025.pdf" target="_blank" rel="noopener">Leer PDF</a>
+            <a class="btn" href="articulos/Contexto%20macro%20semestral%202025.pdf" target="_blank" rel="noopener">Leer PDF</a>
           </p>
         </article>
 
@@ -171,6 +160,67 @@
   <footer>© <span id="y"></span> Rodrigo Tolosa</footer>
   <script>
     document.getElementById('y').textContent = new Date().getFullYear()
+  </script>
+
+  <!-- Tema + TradingView Ticker -->
+  <script>
+  (function(){
+    // ===== Theme bootstrap
+    const KEY='rt-theme';
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = localStorage.getItem(KEY);
+    const startDark = saved ? saved==='dark' : prefersDark;
+    if (startDark) document.body.classList.add('dark');
+
+    // Toggle + etiqueta
+    const btn = document.getElementById('themeToggle');
+    function setLabel(){
+      if (!btn) return;
+      btn.textContent = document.body.classList.contains('dark') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+    }
+    if (btn){
+      btn.addEventListener('click', ()=>{
+        document.body.classList.toggle('dark');
+        localStorage.setItem(KEY, document.body.classList.contains('dark') ? 'dark' : 'light');
+        setLabel();
+        buildTicker(); // reconstruir con tema correcto
+      });
+      setLabel();
+    }
+
+    // ===== TradingView Ticker builder
+    function buildTicker(){
+      const container = document.getElementById('tv-ticker');
+      if (!container) return;
+      container.innerHTML = '<div class="tradingview-widget-container__widget"></div>';
+
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src  = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+      script.async = true;
+
+      const isDark = document.body.classList.contains('dark');
+      script.innerHTML = JSON.stringify({
+        "symbols": [
+          { "proName": "FX_IDC:USDARS", "title": "USD/ARS" },
+          { "proName": "TVC:GOLD",     "title": "Oro (oz)" },
+          { "proName": "TVC:UKOIL",    "title": "Brent (bbl)" },
+          { "proName": "TVC:USOIL",    "title": "WTI (bbl)" },
+          { "proName": "CBOT:ZS1!",    "title": "Soja (CBOT)" },
+          { "proName": "NYSEARCA:LIT", "title": "Litio (ETF proxy)" }
+        ],
+        "showSymbolLogo": false,
+        "colorTheme": isDark ? "dark" : "light",
+        "isTransparent": false,
+        "displayMode": "adaptive",
+        "locale": "es"
+      });
+
+      container.appendChild(script);
+    }
+
+    window.addEventListener('DOMContentLoaded', buildTicker);
+  })();
   </script>
 </body>
 </html>
