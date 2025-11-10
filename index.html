@@ -182,7 +182,7 @@
     const btn = document.getElementById('themeToggle');
     function setLabel(){
       if (!btn) return;
-      btn.textContent = document.body.classList.contains('dark') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+      btn.textContent = document.body.classList.contains('dark') ? 'Modo claro' : 'Modo oscuro';
     }
     if (btn){
       btn.addEventListener('click', ()=>{
@@ -210,8 +210,8 @@
         "symbols": [
           { "proName": "FX_IDC:USDARS", "title": "USD/ARS" },
           { "proName": "TVC:GOLD",     "title": "Oro (oz)" },
-          { "proName": "TVC:UKOIL",    "title": "Brent (bbl)" },
-          { "proName": "TVC:USOIL",    "title": "WTI (bbl)" },
+          { "proName": "TVC:UKOIL",    "title": "Brent (bbl) P.Int" },
+          { "proName": "TVC:USOIL",    "title": "WTI (bbl) Mercado USA" },
           { "proName": "CBOT:ZS1!",    "title": "Soja (CBOT)" },
           { "proName": "NYSEARCA:LIT", "title": "Litio (ETF proxy)" }
         ],
