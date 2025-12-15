@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BASHBOARDS</title>
+
+  <!-- Plotly (charts) -->
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <!-- PapaParse (CSV) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <!-- SheetJS (Excel) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <style>
+    :root { --bg:#0b1020; --card:#111a33; --text:#e9edff; --muted:#a9b2d6; --accent:#7aa2ff; --border:rgba(255,255,255,.10); }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: radial-gradient(900px 500px at 20% 0%, #13204a 0%, var(--bg) 55%); color:var(--text); }
+    .wrap { max-width:1100px; margin: 0 auto; padding: 28px 18px 60px; }
+    .top { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    h1 { margin:0; font-size: 34px; letter-spacing:.5px; }
+    .sub { margin-top:6px; color:var(--muted); }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border:1px solid var(--border); border-radius: 16px; padding: 16px; margin-top:16px; }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+    label { display:block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    input[type="file"], select { width: 260px; max-width: 100%; padding: 10px 12px; border-radius: 12px; border:1px solid var(--border); background: rgba(0,0,0,.25); color: var(--text); outline:none; }
+    button { padding: 10px 14px; border-radius: 12px; border:1px solid var(--border); background: rgba(122,162,255,.18); color: var(--text); cursor:pointer; }
+    button:hover { background: rgba(122,162,255,.28); }
+    .hint { color: var(--muted); font-size: 12px; margin-top:10px; }
+    .grid { display:grid; grid-template-columns: 1.2fr .8fr; gap: 14px; }
+    @media (max-width: 960px){ .grid { grid-template-columns: 1fr; } }
+    #chart { height: 520px; }
+    table { width:100%; border-collapse: collapse; font-size: 12px; overflow:hidden; }
+    th, td { border-bottom: 1px solid var(--border); padding: 8px; text-align:left; white-space:nowrap; }
+    th { position: sticky; top: 0; background: rgba(10,15,30,.95); }
+    .tableWrap { max-height: 360px; overflow:auto; border:1px solid var(--border); border-radius: 14px; }
+    .badge { display:inline-block; padding: 4px 10px; border:1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: 12px; }
+    a { color: var(--accent); text-decoration:none; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <h1>BASHBOARDS</h1>
+        <div class="sub">Subí un <span class="badge">CSV</span> o <span class="badge">Excel</span> y armá gráficos interactivos al toque.</div>
+      </div>
+      <div class="badge">Todo se procesa localmente en tu navegador (no se sube a ningún servidor).</div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>Archivo (.csv / .xlsx / .xls)</label>
+          <input id="file" type="file" accept=".csv,.xlsx,.xls" />
+        </div>
+
+        <div>
+          <label>Tipo de gráfico</label>
+          <select id="chartType" disabled>
+            <option value="line">Línea</option>
+            <option value="bar">Barras</option>
+            <option value="scatter">Dispersión</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Eje X</label>
+          <select id="xCol" disabled></select>
+        </div>
+
+        <div>
+          <label>Eje Y</label>
+          <select id="yCol" disabled></select>
+        </div>
+
+        <div>
+          <button id="plotBtn" disabled>Graficar</button>
+        </div>
+      </div>
+
+      <div class="hint">
+        Tip: si tu Excel tiene varias hojas, por ahora se usa la <b>primera</b>. (Se puede extender fácil para elegir sheet).
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin:0 0 10px 0;">Gráfico</h3>
+        <div id="chart"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 10px 0;">Preview de datos</h3>
+        <div class="tableWrap">
+          <table id="preview"></table>
+        </div>
+        <div class="hint" id="meta"></div>
+      </div>
+    </div>
+
+    <div class="hint" style="margin-top:18px;">
+      Volver a tu sitio: <a href="./">Home</a>
+    </div>
+  </div>
+
+<script>
+  const fileInput = document.getElementById("file");
+  const xCol = document.getElementById("xCol");
+  const yCol = document.getElementById("yCol");
+  const chartType = document.getElementById("chartType");
+  const plotBtn = document.getElementById("plotBtn");
+  const preview = document.getElementById("preview");
+  const meta = document.getElementById("meta");
+
+  let rows = [];
+  let columns = [];
+
+  const isNumberish = (v) => {
+    if (v === null || v === undefined) return false;
+    const s = String(v).trim();
+    if (s === "") return false;
+    // soporta formato "1.234,56" y "1234.56"
+    const normalized = s.replace(/\./g, "").replace(",", ".");
+    const n = Number(normalized);
+    return Number.isFinite(n);
+  };
+
+  const toNumber = (v) => {
+    const s = String(v ?? "").trim();
+    const normalized = s.replace(/\./g, "").replace(",", ".");
+    const n = Number(normalized);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const enableControls = (enabled) => {
+    xCol.disabled = !enabled;
+    yCol.disabled = !enabled;
+    chartType.disabled = !enabled;
+    plotBtn.disabled = !enabled;
+  };
+
+  const setOptions = (select, opts, preferredIndex = 0) => {
+    select.innerHTML = "";
+    opts.forEach(o => {
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o;
+      select.appendChild(opt);
+    });
+    select.selectedIndex = Math.min(preferredIndex, opts.length - 1);
+  };
+
+  const renderPreview = () => {
+    const sample = rows.slice(0, 100);
+    preview.innerHTML = "";
+
+    const thead = document.createElement("thead");
+    const hr = document.createElement("tr");
+    columns.forEach(c => {
+      const th = document.createElement("th");
+      th.textContent = c;
+      hr.appendChild(th);
+    });
+    thead.appendChild(hr);
+    preview.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    sample.forEach(r => {
+      const tr = document.createElement("tr");
+      columns.forEach(c => {
+        const td = document.createElement("td");
+        td.textContent = (r[c] ?? "").toString();
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    preview.appendChild(tbody);
+
+    meta.textContent = `Filas: ${rows.length.toLocaleString("es-AR")} · Columnas: ${columns.length} · Preview: primeras ${sample.length} filas`;
+  };
+
+  const plot = () => {
+    const x = xCol.value;
+    const y = yCol.value;
+    const type = chartType.value;
+
+    const xVals = [];
+    const yVals = [];
+
+    for (const r of rows) {
+      const xv = r[x];
+      const yv = toNumber(r[y]);
+      if (xv === undefined || xv === null || String(xv).trim() === "") continue;
+      if (yv === null) continue;
+      xVals.push(xv);
+      yVals.push(yv);
+    }
+
+    const trace = {
+      x: xVals,
+      y: yVals,
+      type: type === "scatter" ? "scatter" : type,
+      mode: type === "scatter" ? "markers" : undefined,
+      name: `${y} vs ${x}`
+    };
+
+    const layout = {
+      margin: { t: 40, r: 20, b: 60, l: 60 },
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      font: { color: "#e9edff" },
+      xaxis: { title: x, gridcolor: "rgba(255,255,255,.08)" },
+      yaxis: { title: y, gridcolor: "rgba(255,255,255,.08)" }
+    };
+
+    Plotly.newPlot("chart", [trace], layout, { responsive: true });
+  };
+
+  const loadCSV = (file) => new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: false,
+      complete: (res) => resolve(res.data),
+      error: (err) => reject(err)
+    });
+  });
+
+  const loadExcel = async (file) => {
+    const ab = await file.arrayBuffer();
+    const wb = XLSX.read(ab, { type: "array" });
+    const first = wb.SheetNames[0];
+    const ws = wb.Sheets[first];
+    return XLSX.utils.sheet_to_json(ws, { defval: "" });
+  };
+
+  const ingest = async (file) => {
+    const ext = file.name.toLowerCase().split(".").pop();
+    if (ext === "csv") return await loadCSV(file);
+    if (ext === "xlsx" || ext === "xls") return await loadExcel(file);
+    throw new Error("Formato no soportado. Usá .csv, .xlsx o .xls");
+  };
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+
+    enableControls(false);
+    meta.textContent = "Cargando archivo...";
+
+    try {
+      rows = await ingest(file);
+      columns = rows.length ? Object.keys(rows[0]) : [];
+
+      if (!columns.length) throw new Error("No se detectaron columnas (¿archivo vacío?)");
+
+      // Y: preferir la primera columna numérica
+      const numericCols = columns.filter(c => rows.slice(0, 50).some(r => isNumberish(r[c])));
+      const defaultY = numericCols.length ? columns.indexOf(numericCols[0]) : 1;
+
+      setOptions(xCol, columns, 0);
+      setOptions(yCol, columns, Math.max(0, defaultY));
+      renderPreview();
+      enableControls(true);
+
+      plot(); // auto-plot inicial
+    } catch (e) {
+      meta.textContent = e?.message || "Error cargando archivo.";
+      preview.innerHTML = "";
+      Plotly.purge("chart");
+    }
+  });
+
+  plotBtn.addEventListener("click", plot);
+  xCol.addEventListener("change", plot);
+  yCol.addEventListener("change", plot);
+  chartType.addEventListener("change", plot);
+</script>
+</body>
+</html>
