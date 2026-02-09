@@ -52,12 +52,12 @@
       border-bottom:1px solid var(--border);
       margin:14px 0;
     }
-  
+
     /* Colores de subtítulo y tag según tema */
-  .subtitle,
-  .tag{
-    color: var(--fg) !important;  /* negro en claro, blanco en oscuro */
-  }
+    .subtitle,
+    .tag{
+      color: var(--fg) !important;  /* negro en claro, blanco en oscuro */
+    }
   </style>
 </head>
 <body>
@@ -68,6 +68,7 @@
     <p>
       <a class="btn" href="https://github.com/rodrigotolosaTP" target="_blank" rel="noopener">GitHub</a>
       <a class="btn" href="bashboards.html">Bashboards</a>
+      <a class="btn" href="#redacto">Redacto</a>
       <a class="btn" href="mailto:rodrigotolosa7@outlook.com">Contacto</a>
       <button id="themeToggle" class="btn" type="button" aria-label="Cambiar tema">Modo oscuro</button>
     </p>
@@ -105,7 +106,7 @@
             <a class="btn" href="#" target="_blank" rel="noopener">Abrir</a>
           </p>
         </article>
-        
+
         <!-- Nube de palabras -->
         <article class="card">
           <h3>Algoritmo para generar una nube de palabras</h3>
@@ -169,7 +170,7 @@
             <a class="btn" href="articulos/contexto_economico_TIII_25.pdf" target="_blank" rel="noopener">Leer PDF</a>
           </p>
         </article>
-        
+
         <!-- Artículo 4 -->
         <article class="card">
           <h3>Contexto Económico Argentino - Octubre 2025</h3>
@@ -179,6 +180,42 @@
             <a class="btn" href="articulos/Contexto Economico Octubre 2025.pdf" target="_blank" rel="noopener">Leer PDF</a>
           </p>
         </article>
+      </div>
+    </section>
+
+    <!-- ===================== -->
+    <!-- Sección: Redacto      -->
+    <!-- ===================== -->
+    <section id="redacto">
+      <h2>Redacto</h2>
+      <p class="note">
+        Escritos y textos en formato PDF.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <h3>Redacto — Escrito 1</h3>
+          <p class="tags">Redacto · 4 páginas</p>
+          <p>Texto propio. Podés leerlo acá mismo o abrirlo en una pestaña nueva.</p>
+          <p>
+            <a class="btn" href="redacto/Redacto_escrito1.pdf" target="_blank" rel="noopener">Leer PDF</a>
+            <a class="btn" href="redacto/Redacto_escrito1.pdf" download>Descargar</a>
+          </p>
+        </article>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3 style="margin-top:0;">Vista previa</h3>
+        <iframe
+          src="redacto/Redacto_escrito1.pdf"
+          width="100%"
+          height="900"
+          style="border:1px solid var(--border); border-radius:12px;"
+          loading="lazy"
+        ></iframe>
+        <p class="note" style="margin-top:10px;">
+          Si el visor no carga en tu navegador, usá el botón “Leer PDF”.
+        </p>
       </div>
     </section>
 
