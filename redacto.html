@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>RT · Redacto</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Redacto · Escritos en PDF" />
+
+  <link rel="canonical" href="https://rodrigotolosa.com/redacto.html">
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+  <style>
+    :root { --mx: 980px; color-scheme: light dark; --bg:#fff; --fg:#111; --muted:#666; --border:#eee; }
+    .dark { --bg:#0f1115; --fg:#f3f4f6; --muted:#a1a1aa; --border:#262b36; }
+    * { box-sizing: border-box; }
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:var(--fg); line-height:1.6; background:var(--bg);}
+    header{padding:44px 20px 22px; border-bottom:1px solid var(--border);}
+    .wrap{max-width:var(--mx); margin:0 auto;}
+    h1{margin:0 0 2px; font-size:2rem;}
+    .subtitle{margin:0 0 12px; font-size:1.15rem; font-weight:600; color:var(--fg);}
+    .tag{color:var(--fg); margin:0 0 16px;}
+    .btn{display:inline-block; margin:6px 10px 0 0; padding:9px 14px; border:1px solid var(--fg); border-radius:12px; text-decoration:none; color:var(--fg); background:transparent; cursor:pointer;}
+    .btn:hover{background:var(--fg); color:var(--bg); transition:.15s;}
+    main{padding:26px 20px 80px;}
+    section{margin-top:18px;}
+    h2{margin:0 0 14px; font-size:1.35rem;}
+    .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px;}
+    .card{border:1px solid var(--border); border-radius:16px; padding:16px;}
+    .card h3{margin:0 0 6px; font-size:1.1rem;}
+    .tags{color:var(--muted); font-size:.9rem; margin:0 0 8px;}
+    .note { font-size:.9rem; color:var(--muted); margin:-6px 0 16px; line-height:1.4; }
+    footer{border-top:1px solid var(--border); color:var(--muted); text-align:center; padding:24px;}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Redacto</h1>
+      <p class="subtitle">Escritos en PDF</p>
+      <p class="tag">Rodrigo Tolosa</p>
+      <p>
+        <a class="btn" href="index.html">Volver al inicio</a>
+        <button id="themeToggle" class="btn" type="button" aria-label="Cambiar tema">Modo oscuro</button>
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section>
+        <p class="note">
+          Acá publico mis escritos. Podés abrirlos, descargarlos y ver una vista previa.
+        </p>
+
+        <div class="grid">
+          <!-- Escrito 1 -->
+          <article class="card">
+            <h3>Redacto — Escrito 1</h3>
+            <p class="tags">PDF · 4 páginas</p>
+            <p>
+              <a class="btn" href="redacto/Redacto_escrito1.pdf" target="_blank" rel="noopener">Leer PDF</a>
+              <a class="btn" href="redacto/Redacto_escrito1.pdf" download>Descargar</a>
+            </p>
+          </article>
+
+          <!-- Escrito 2 (EDITÁ el nombre del archivo) -->
+          <article class="card">
+            <h3>Redacto — Escrito 2</h3>
+            <p class="tags">PDF</p>
+            <p>
+              <a class="btn" href="redacto/redacto_escrito2.pdf" target="_blank" rel="noopener">Leer PDF</a>
+              <a class="btn" href="redacto/redacto_escrito2.pdf" download>Descargar</a>
+            </p>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3 style="margin-top:0;">Vista previa (último publicado)</h3>
+          <iframe
+            src="redacto/redacto_escrito2.pdf"
+            width="100%"
+            height="900"
+            style="border:1px solid var(--border); border-radius:12px;"
+            loading="lazy"
+          ></iframe>
+          <p class="note" style="margin-top:10px;">
+            Si el visor no carga, abrilo con “Leer PDF”.
+          </p>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <footer>© <span id="y"></span> Rodrigo Tolosa</footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    (function(){
+      const KEY='rt-theme';
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const saved = localStorage.getItem(KEY);
+      const startDark = saved ? saved==='dark' : prefersDark;
+      if (startDark) document.body.classList.add('dark');
+
+      const btn = document.getElementById('themeToggle');
+      function setLabel(){
+        if (!btn) return;
+        btn.textContent = document.body.classList.contains('dark') ? 'Modo claro' : 'Modo oscuro';
+      }
+      if (btn){
+        btn.addEventListener('click', ()=>{
+          document.body.classList.toggle('dark');
+          localStorage.setItem(KEY, document.body.classList.contains('dark') ? 'dark' : 'light');
+          setLabel();
+        });
+        setLabel();
+      }
+    })();
+  </script>
+</body>
+</html>
