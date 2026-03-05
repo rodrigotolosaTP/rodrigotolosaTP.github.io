@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario de Publicaciones Económicas · data y acción</title>
+<style>
+  :root {
+    --bg: #07060f;
+    --bg2: #0d0c1a;
+    --blue: #1a6bdc;
+    --blue-light: #5b9cf6;
+    --green: #00c87a;
+    --red: #ff5555;
+    --orange: #f59e0b;
+    --purple: #a78bfa;
+    --text: #e0e0f0;
+    --muted: #666;
+    --border: rgba(255,255,255,.07);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #06060f 0%, #0d0c1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px 24px;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  header::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 60% 50%, rgba(26,107,220,.1) 0%, transparent 60%);
+    pointer-events:none;
+  }
+  .header-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+  .brand { font-size:22px; font-weight:800; letter-spacing:2px; }
+  .brand .w { color:#fff; } .brand .b { color: var(--blue-light); }
+  .header-title { color: var(--muted); font-size:13px; letter-spacing:3px; text-transform:uppercase; }
+
+  /* FILTERS */
+  .filters {
+    max-width:1100px; margin:32px auto 0; padding:0 20px;
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .filter-btn {
+    border:1px solid var(--border); background:rgba(255,255,255,.04);
+    color:#aaa; font-size:12px; font-weight:600; letter-spacing:1px;
+    padding:7px 16px; border-radius:30px; cursor:pointer; transition:.2s;
+    text-transform:uppercase;
+  }
+  .filter-btn:hover { background:rgba(255,255,255,.08); color:#fff; }
+  .filter-btn.active { background: var(--blue); border-color: var(--blue); color:#fff; }
+
+  /* MAIN */
+  main { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
+
+  /* MONTH SECTION */
+  .month-section { margin-bottom:48px; }
+  .month-label {
+    font-size:11px; font-weight:700; letter-spacing:4px; text-transform:uppercase;
+    color: var(--muted); margin-bottom:16px; padding-left:4px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .month-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* EVENTS GRID */
+  .events-grid { display:flex; flex-direction:column; gap:10px; }
+
+  .event-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex; align-items: center; gap:20px;
+    transition: .2s;
+    border-left: 3px solid transparent;
+  }
+  .event-card:hover { background:rgba(255,255,255,.04); transform:translateX(2px); }
+  .event-card.past { opacity:.4; }
+
+  /* color por fuente */
+  .event-card[data-source="INDEC"]   { border-left-color: var(--blue-light); }
+  .event-card[data-source="BCRA-REM"]  { border-left-color: var(--green); }
+  .event-card[data-source="BCRA-IB"]  { border-left-color: var(--purple); }
+  .event-card[data-source="ARCA"]    { border-left-color: var(--orange); }
+  .event-card[data-source="MECON"]   { border-left-color: var(--red); }
+
+  .event-date {
+    min-width: 52px; text-align:center;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .event-date .day { font-size:26px; font-weight:900; line-height:1; color:#fff; }
+  .event-date .dow { font-size:10px; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+
+  .event-divider { width:1px; height:40px; background:var(--border); flex-shrink:0; }
+
+  .event-body { flex:1; }
+  .event-name { font-size:15px; font-weight:600; color:#fff; margin-bottom:4px; line-height:1.3; }
+  .event-detail { font-size:12px; color:var(--muted); }
+
+  .source-badge {
+    font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+    padding:4px 12px; border-radius:20px; flex-shrink:0; white-space:nowrap;
+  }
+  .badge-INDEC    { background:rgba(91,156,246,.12); color:var(--blue-light); border:1px solid rgba(91,156,246,.25); }
+  .badge-BCRA-REM { background:rgba(0,200,122,.1);   color:var(--green);      border:1px solid rgba(0,200,122,.25); }
+  .badge-BCRA-IB  { background:rgba(167,139,250,.1); color:var(--purple);     border:1px solid rgba(167,139,250,.25); }
+  .badge-ARCA     { background:rgba(245,158,11,.1);  color:var(--orange);     border:1px solid rgba(245,158,11,.25); }
+  .badge-MECON    { background:rgba(255,85,85,.1);   color:var(--red);        border:1px solid rgba(255,85,85,.25); }
+
+  .today-marker .event-date .day { color: var(--blue-light); }
+  .today-marker { background: rgba(26,107,220,.07); border-color: rgba(26,107,220,.25); }
+
+  /* FOOTER */
+  footer {
+    text-align:center; padding:32px 20px;
+    color:var(--muted); font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    border-top:1px solid var(--border);
+  }
+  footer a { color:var(--muted); text-decoration:none; }
+  footer a:hover { color:#fff; }
+
+  /* LEGEND */
+  .legend {
+    max-width:1100px; margin:0 auto 28px; padding:0 20px;
+    display:flex; gap:16px; flex-wrap:wrap; align-items:center;
+  }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
+  .legend-dot { width:8px; height:8px; border-radius:50%; }
+
+  @media(max-width:600px) {
+    header { padding:20px; }
+    .header-inner { flex-direction:column; gap:6px; align-items:flex-start; }
+    .event-card { flex-wrap:wrap; gap:12px; }
+    .event-divider { display:none; }
+    .source-badge { align-self:flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand"><span class="w">data</span> <span class="b">y</span> <span class="w">acción</span></div>
+    <div class="header-title">Calendario de publicaciones económicas 2026 <span style="opacity:.5;font-size:11px">(las fechas pueden variar 1-2 días — el BCRA no publica en día fijo)</span></div>
+  </div>
+</header>
+
+<div style="max-width:1100px; margin:0 auto; padding:28px 20px 0;">
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#5b9cf6"></div>INDEC</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#00c87a"></div>BCRA · REM</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>BCRA · Informe Bancos</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>ARCA</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ff5555"></div>Min. Economía</div>
+  </div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterAll(this)">Todos</button>
+  <button class="filter-btn" onclick="filterSource('INDEC', this)">INDEC</button>
+  <button class="filter-btn" onclick="filterSource('BCRA-REM', this)">BCRA · REM</button>
+  <button class="filter-btn" onclick="filterSource('BCRA-IB', this)">BCRA · Bancos</button>
+  <button class="filter-btn" onclick="filterSource('ARCA', this)">ARCA</button>
+  <button class="filter-btn" onclick="filterSource('MECON', this)">Min. Economía</button>
+</div>
+
+<main id="main"></main>
+
+<footer>
+  <a href="https://rodrigotolosa.com">rodrigotolosa.com</a> &nbsp;·&nbsp; datos y acción · 2026
+</footer>
+
+<script>
+const DOW = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Último día hábil del mes (sin feriados, aproximado)
+function lastBusinessDay(year, month) {
+  // month = 1-12
+  let d = new Date(year, month, 0); // último día del mes
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() - 1);
+  return d.getDate();
+}
+
+// Primer día hábil del mes
+function firstBusinessDay(year, month) {
+  let d = new Date(year, month - 1, 1);
+  while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+  return d.getDate();
+}
+
+// Tercer semana del mes: lunes de la 3ra semana ~ día 15-21
+function thirdWeekMonday(year, month) {
+  // Busco el lunes de la tercera semana (dia 15 en adelante)
+  let d = new Date(year, month - 1, 15);
+  while (d.getDay() !== 1) d.setDate(d.getDate() + 1);
+  return d.getDate();
+}
+
+// Construir todos los eventos
+const events = [];
+
+const ipcDates = {
+  1: 13, 2: 10, 3: 12, 4: 14, 5: 14, 6: 11,
+  7: 14, 8: 13, 9: 10, 10: 13, 11: 12, 12: 15
+};
+const ipiManufDates = {
+  1: 8, 2: 6, 3: 6, 4: 9, 5: 7, 6: 9,
+  7: 8, 8: 7, 9: 8, 10: 7, 11: 9, 12: 9
+};
+
+// REM: fechas reales conocidas o calculadas por mes
+const remDates = {
+  3: 5,  // publicado hoy
+  4: 2, 5: 5, 6: 2, 7: 2, 8: 4, 9: 2, 10: 2, 11: 3, 12: 3
+};
+
+for (let m = 3; m <= 12; m++) {
+  const y = 2026;
+
+  // IPC INDEC
+  events.push({
+    date: new Date(y, m-1, ipcDates[m]),
+    name: 'Índice de Precios al Consumidor (IPC)',
+    detail: `Cobertura nacional · ${MONTHS[m-1]} ${y}`,
+    source: 'INDEC'
+  });
+
+  // IPI Manufacturero INDEC
+  events.push({
+    date: new Date(y, m-1, ipiManufDates[m]),
+    name: 'IPI Manufacturero',
+    detail: `Índice de Producción Industrial · ${MONTHS[m-1]} ${y}`,
+    source: 'INDEC'
+  });
+
+  // BCRA REM — fecha real/estimada
+  const remDay = remDates[m] || firstBusinessDay(y, m);
+  events.push({
+    date: new Date(y, m-1, remDay),
+    name: 'Relevamiento de Expectativas del Mercado (REM)',
+    detail: `BCRA · publicación mensual · ${MONTHS[m-1]} ${y}`,
+    source: 'BCRA-REM'
+  });
+
+  // BCRA Informe sobre bancos — tercera semana del mes
+  const ibDay = thirdWeekMonday(y, m);
+  events.push({
+    date: new Date(y, m-1, ibDay),
+    name: 'Informe sobre Bancos',
+    detail: `BCRA · sistema financiero · ${MONTHS[m-1]} ${y}`,
+    source: 'BCRA-IB'
+  });
+
+  // ARCA Recaudación — último día hábil
+  const arcaDay = lastBusinessDay(y, m);
+  events.push({
+    date: new Date(y, m-1, arcaDay),
+    name: 'Recaudación Tributaria',
+    detail: `ARCA · DNAF · ${MONTHS[m-1]} ${y}`,
+    source: 'ARCA'
+  });
+
+  // Min. Economía — segunda quincena (aprox. día 18)
+  events.push({
+    date: new Date(y, m-1, 18),
+    name: 'Resultado Fiscal · Superávit / Déficit',
+    detail: `Ministerio de Economía · Sector Público Nacional · ${MONTHS[m-1]} ${y}`,
+    source: 'MECON'
+  });
+}
+
+// Ordenar por fecha
+events.sort((a,b) => a.date - b.date);
+
+const today = new Date();
+today.setHours(0,0,0,0);
+
+function renderEvents(filtered) {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  // Agrupar por mes
+  const byMonth = {};
+  filtered.forEach(ev => {
+    const key = ev.date.getFullYear() + '-' + ev.date.getMonth();
+    if (!byMonth[key]) byMonth[key] = { label: MONTHS[ev.date.getMonth()] + ' ' + ev.date.getFullYear(), events: [] };
+    byMonth[key].events.push(ev);
+  });
+
+  Object.values(byMonth).forEach(group => {
+    const section = document.createElement('div');
+    section.className = 'month-section';
+    section.innerHTML = `<div class="month-label">${group.label}</div><div class="events-grid" id="grid-${group.label}"></div>`;
+    main.appendChild(section);
+
+    const grid = section.querySelector('.events-grid');
+    group.events.forEach(ev => {
+      const isPast = ev.date < today;
+      const isToday = ev.date.getTime() === today.getTime();
+      const d = ev.date;
+      const card = document.createElement('div');
+      card.className = 'event-card' + (isPast?' past':'') + (isToday?' today-marker':'');
+      card.dataset.source = ev.source;
+      card.innerHTML = `
+        <div class="event-date">
+          <div class="day">${d.getDate()}</div>
+          <div class="dow">${DOW[d.getDay()]}</div>
+        </div>
+        <div class="event-divider"></div>
+        <div class="event-body">
+          <div class="event-name">${ev.name}</div>
+          <div class="event-detail">${ev.detail}</div>
+        </div>
+        <div class="source-badge badge-${ev.source}">${ev.source.replace('-',' · ')}</div>
+      `;
+      grid.appendChild(card);
+    });
+  });
+}
+
+function filterAll(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEvents(events);
+}
+
+function filterSource(src, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEvents(events.filter(e => e.source === src));
+}
+
+renderEvents(events);
+
+// Scroll al mes actual
+setTimeout(() => {
+  const sections = document.querySelectorAll('.month-section');
+  const currentMonth = MONTHS[today.getMonth()] + ' ' + today.getFullYear();
+  sections.forEach(s => {
+    if (s.querySelector('.month-label')?.textContent.includes(MONTHS[today.getMonth()])) {
+      s.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+}, 300);
+</script>
+</body>
+</html>
